@@ -86,14 +86,20 @@ config(EBinDir, Config) ->
         dict:store(?LFE_OPTS, Defaults, Config)).
 
 %% Modified from rebar_prv_alpaca:do/1 and lr3_comp:compile_dir/4.
--spec compile_app(rebar_app_info:t()) -> rebar_base_compiler:compile_fn_ret().
+-spec compile_app(rebar_app_info:t()) -> ok.
 compile_app(AppInfo) ->
-    EBinDir = rebar_app_info:ebin_dir(AppInfo),
     AppDir = rebar_app_info:dir(AppInfo),
     SourceDir = filename:join(AppDir, "src"),
+    EBinDir = rebar_app_info:ebin_dir(AppInfo),
     Opts = rebar_app_info:opts(AppInfo),
-    FirstFiles = lfe_first_files(Opts, AppDir),
     Config = config(EBinDir, Opts),
+    FirstFiles = lfe_first_files(Opts, AppDir),
+    compile_dir(SourceDir, EBinDir, Config, FirstFiles),
+    ExtraDirs = rebar_dir:extra_src_dirs(Opts),
+    [compile_dir(Dir, EBinDir, Config, FirstFiles) || Dir <- ExtraDirs],
+    ok.
+
+compile_dir(SourceDir, EBinDir, Config, FirstFiles) ->
     rebar_base_compiler:run(Config, FirstFiles,
                             SourceDir, ".lfe",
                             EBinDir, ".beam",

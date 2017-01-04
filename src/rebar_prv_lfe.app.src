@@ -1,6 +1,6 @@
 {application,rebar_prv_lfe,
  [{description,"A simple rebar3 plugin for compiling LFE modules"},
-  {vsn,"0.0.1"},
+  {vsn,"0.1.0"},
   {registered,[]},
   {applications,[kernel,stdlib]},
   {env,[]},

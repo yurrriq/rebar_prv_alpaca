@@ -1,0 +1,11 @@
+{application,rebar_prv_lfe,
+ [{description,"A simple rebar3 plugin for compiling LFE modules"},
+  {vsn,"0.0.1"},
+  {registered,[]},
+  {applications,[kernel,stdlib]},
+  {env,[]},
+  {modules,[]},
+  {maintainers,["Eric Bailey"]},
+  {licenses,["Apache 2"]},
+  {links,[{"GitHub",
+           "https://github.com/yurrriq/rebar_prv_lfe"}]}]}.

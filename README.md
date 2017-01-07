@@ -9,8 +9,8 @@ Add the plugin to your `rebar.config`:
 ```erlang
 {plugins, [
   {rebar_prv_lfe,
-   {git, "https://github.com/yurrriq/rebar_prv_lfe.git",
-    {branch, "master"}}}
+   {git, "git://github.com/yurrriq/rebar_prv_lfe.git",
+    {tag, "0.2.0"}}}
 ]}.
 
 

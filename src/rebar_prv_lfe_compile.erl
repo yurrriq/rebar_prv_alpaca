@@ -39,7 +39,8 @@ do(State) ->
                AppInfo ->
                    [AppInfo]
            end,
-    lists:foreach(fun compile_app/1, Apps),
+    DepsDir = rebar_dir:deps_dir(State),
+    [compile(App, DepsDir) || App <- Apps],
     {ok, State}.
 
 -spec format_error(any()) ->  iolist().
@@ -49,13 +50,34 @@ format_error(Reason) ->
 %% ===================================================================
 %% Private Parts
 %% ===================================================================
+
+%% Modified from rebar_prv_alpaca:do/1 and lr3_comp:compile_dir/4.
+-spec compile(rebar_app_info:t(), file:dirname()) -> ok.
+compile(AppInfo, DepsDir) ->
+    AppDir = rebar_app_info:dir(AppInfo),
+    SourceDir = filename:join(AppDir, "src"),
+    EBinDir = rebar_app_info:ebin_dir(AppInfo),
+    Opts = rebar_app_info:opts(AppInfo),
+    Config = config(DepsDir, EBinDir, Opts),
+    FirstFiles = lfe_first_files(Opts, AppDir),
+    compile_dir(SourceDir, EBinDir, Config, FirstFiles),
+    ExtraDirs = rebar_dir:extra_src_dirs(Opts),
+    [compile_dir(Dir, EBinDir, Config, FirstFiles) || Dir <- ExtraDirs],
+    ok.
+
+compile_dir(SourceDir, EBinDir, Config, FirstFiles) ->
+    rebar_base_compiler:run(Config, FirstFiles,
+                            SourceDir, ".lfe",
+                            EBinDir, ".beam",
+                            fun compile_lfe/3).
+
 %% Modified from lr3_comp:compile/3.
--spec compile(Source, Target, Config) -> Result when
+-spec compile_lfe(Source, Target, Config) -> Result when
       Source :: file:filename(),
       Target :: file:filename(),
       Config :: dict:dict(),
       Result :: ok | {ok, [string()]} | rebar_base_compiler:error_tuple().
-compile(Source, Target, Config) ->
+compile_lfe(Source, Target, Config) ->
     LfeOpts = dict:fetch(lfe_opts, Config),
 
     rebar_api:debug("Compiling ~s to ~s with opts: ~p",
@@ -73,37 +95,18 @@ compile(Source, Target, Config) ->
     end.
 
 %% Modified from lr3_comp_util:config/2.
--spec config(EBinDir, Config1) -> Config2 when
-      EBinDir :: file:dirname(),
-      Config1 :: [proplists:property()] | dict:dict(),
-      Config2 :: [proplists:property()] | dict:dict().
-config(EBinDir, Config) ->
-    ErlOpts = rebar_opts:erl_opts(Config),
-    %% TODO: make include dir configurable
-    Defaults = [{outdir, EBinDir}, {i, "include"}, return, verbose | ErlOpts],
+-spec config(DepsDir, EBinDir, Config1) -> Config2 when
+      DepsDir  :: file:dirname(),
+      EBinDir  :: file:dirname(),
+      Config1  :: [proplists:property()] | dict:dict(),
+      Config2  :: [proplists:property()] | dict:dict().
+config(DepsDir, EBinDir, Config) ->
+    %% TODO: clean this up
+    Opts = [ {outdir, EBinDir}, {i, DepsDir}, {i, "include"}, return, verbose
+             | rebar_opts:erl_opts(Config) ],
     ?IF(dict:is_key(?LFE_OPTS, Config),
-        dict:append_list(?LFE_OPTS, Defaults, Config),
-        dict:store(?LFE_OPTS, Defaults, Config)).
-
-%% Modified from rebar_prv_alpaca:do/1 and lr3_comp:compile_dir/4.
--spec compile_app(rebar_app_info:t()) -> ok.
-compile_app(AppInfo) ->
-    AppDir = rebar_app_info:dir(AppInfo),
-    SourceDir = filename:join(AppDir, "src"),
-    EBinDir = rebar_app_info:ebin_dir(AppInfo),
-    Opts = rebar_app_info:opts(AppInfo),
-    Config = config(EBinDir, Opts),
-    FirstFiles = lfe_first_files(Opts, AppDir),
-    compile_dir(SourceDir, EBinDir, Config, FirstFiles),
-    ExtraDirs = rebar_dir:extra_src_dirs(Opts),
-    [compile_dir(Dir, EBinDir, Config, FirstFiles) || Dir <- ExtraDirs],
-    ok.
-
-compile_dir(SourceDir, EBinDir, Config, FirstFiles) ->
-    rebar_base_compiler:run(Config, FirstFiles,
-                            SourceDir, ".lfe",
-                            EBinDir, ".beam",
-                            fun compile/3).
+        dict:append_list(?LFE_OPTS, Opts, Config),
+        dict:store(?LFE_OPTS, Opts, Config)).
 
 %% Renamed lr3_comp_util:get_first_files/2.
 -spec lfe_first_files(Opts, AppDir) -> Files when

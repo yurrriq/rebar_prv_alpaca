@@ -10,7 +10,7 @@ otp_release:
 before_script:
 - wget https://s3.amazonaws.com/rebar3/rebar3
 - chmod +x rebar3
-env: PATH=.:$PATH
+env: PATH=.:$PATH DEBUG=1
 script: rebar3 ct && rebar3 coveralls send
 cache:
   directories:

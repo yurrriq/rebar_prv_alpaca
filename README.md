@@ -1,6 +1,8 @@
 # rebar_prv_lfe
 
-*A `rebar3` plugin for compiling [LFE](https://github.com/rvirding/lfe) modules.*
+[![Build Status][Travis badge]][Travis link]
+
+*A `rebar3` plugin for compiling [LFE][] modules.*
 
 ## Usage
 
@@ -39,3 +41,10 @@ Compiling lfe-test
 ok
 2>
 ```
+
+
+<!-- Named Links -->
+
+[Travis badge]: https://travis-ci.org/yurrriq/rebar_prv_lfe.svg?branch=develop
+[Travis link]: https://travis-ci.org/yurrriq/rebar_prv_lfe
+[LFE]: https://github.com/rvirding/lfe

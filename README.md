@@ -14,7 +14,7 @@ Add the plugin to your `rebar.config`:
 ]}.
 
 
-{provider_hooks, [{pre, [{app_compile, {alpaca, compile}}]}]}.
+{provider_hooks, [{pre, [{app_compile, {lfe, compile}}]}]}.
 ```
 
 

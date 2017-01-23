@@ -6,6 +6,6 @@
   {env,[]},
   {modules,[]},
   {maintainers,["Eric Bailey"]},
-  {licenses,["Apache 2"]},
-  {links,[{"GitHub",
-           "https://github.com/yurrriq/rebar_prv_lfe"}]}]}.
+  {licenses,["BSD-3"]},
+  {links,[{"GitHub","https://github.com/yurrriq/rebar_prv_lfe"}
+         ,{"GitLab","https://gitlab.com/yurrriq/rebar_prv_lfe"}]}]}.

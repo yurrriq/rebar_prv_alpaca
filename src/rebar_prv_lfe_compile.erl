@@ -12,6 +12,13 @@
 %% Bloody useful
 -define(IF(Test,True,False), case Test of true -> True; false -> False end).
 
+%% Copied from rebar.hrl
+-ifdef(namespaced_types).
+-type rebar_dict() :: dict:dict().
+-else.
+-type rebar_dict() :: dict().
+-endif.
+
 %% ===================================================================
 %% Public API
 %% ===================================================================
@@ -75,7 +82,7 @@ compile_dir(SourceDir, EBinDir, Config, FirstFiles) ->
 -spec compile_lfe(Source, Target, Config) -> Result when
       Source :: file:filename(),
       Target :: file:filename(),
-      Config :: dict:dict(),
+      Config :: rebar_dict(),
       Result :: ok | {ok, [string()]} | rebar_base_compiler:error_tuple().
 compile_lfe(Source, Target, Config) ->
     LfeOpts = dict:fetch(lfe_opts, Config),
@@ -98,8 +105,8 @@ compile_lfe(Source, Target, Config) ->
 -spec config(DepsDir, EBinDir, Config1) -> Config2 when
       DepsDir  :: file:dirname(),
       EBinDir  :: file:dirname(),
-      Config1  :: [proplists:property()] | dict:dict(),
-      Config2  :: [proplists:property()] | dict:dict().
+      Config1  :: [proplists:property()] | rebar_dict(),
+      Config2  :: [proplists:property()] | rebar_dict().
 config(DepsDir, EBinDir, Config) ->
     %% TODO: clean this up
     Opts = [ {outdir, EBinDir}, {i, DepsDir}, {i, "include"}, return, verbose
@@ -110,7 +117,7 @@ config(DepsDir, EBinDir, Config) ->
 
 %% Renamed lr3_comp_util:get_first_files/2.
 -spec lfe_first_files(Opts, AppDir) -> Files when
-      Opts   :: [proplists:property()] | dict:dict(),
+      Opts   :: [proplists:property()] | rebar_dict(),
       AppDir :: file:dirname(),
       Files  :: [file:filename()].
 lfe_first_files(Opts, AppDir) ->

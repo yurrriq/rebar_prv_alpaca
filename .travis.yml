@@ -5,7 +5,7 @@ otp_release:
 - 19.1
 - 18.0
 - 17.5
-# - R16B03-1 # FIXME: namespaced_types
+- R16B03-1
 # - R15B03
 before_script:
 - wget https://s3.amazonaws.com/rebar3/rebar3

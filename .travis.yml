@@ -11,7 +11,11 @@ before_script:
 - wget https://s3.amazonaws.com/rebar3/rebar3
 - chmod +x rebar3
 env: PATH=.:$PATH
-script: rebar3 do compile, ct && rebar3 coveralls send
+script: |
+  rebar3 do compile, ct
+  if [[ "19.1" == "$TRAVIS_OTP_RELEASE" ]]; then
+    rebar3 coveralls send
+  fi
 cache:
   directories:
   - $HOME/.cache/rebar3

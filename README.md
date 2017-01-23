@@ -1,6 +1,7 @@
 # rebar_prv_lfe
 
 [![Build Status][Travis badge]][Travis link]
+[![Coverage Status][Coveralls badge]][Coveralls link]
 
 *A `rebar3` plugin for compiling [LFE][] modules.*
 
@@ -47,4 +48,6 @@ ok
 
 [Travis badge]: https://travis-ci.org/yurrriq/rebar_prv_lfe.svg?branch=develop
 [Travis link]: https://travis-ci.org/yurrriq/rebar_prv_lfe
+[Coveralls badge]: https://coveralls.io/repos/github/yurrriq/rebar_prv_lfe/badge.svg?branch=develop
+[Coveralls link]: https://coveralls.io/github/yurrriq/rebar_prv_lfe?branch=develop
 [LFE]: https://github.com/rvirding/lfe
